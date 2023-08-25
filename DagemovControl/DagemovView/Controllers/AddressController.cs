@@ -31,6 +31,9 @@ namespace DagemovView.Controllers
             };
             return View(adress);
         }
+        /*
+                CRUD COUNTRIES        
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAddress(Adress adress)
@@ -74,9 +77,110 @@ namespace DagemovView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCountry(Country country)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(country);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Duplicate Country Name in dataBase");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            return View(country);
+        }
+        public async Task<IActionResult> CountryDetails(int? id)
+        {
+            
+            if (id == null || _context.Countries == null)
+            {
+                return NotFound();
+            }          
+            var country = await _context.Countries
+                .Include(s=>s.States)
+                .ThenInclude(c=>c.Citys)
+                .ThenInclude(st=>st.Streets)
+                .FirstOrDefaultAsync( c=> c.Id == id);
+            if (country==null)
+            {
+                return NotFound();
+            }
+            return View(country);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CountryDelete(int? id)
+        {
+            if (id == null || _context.Countries == null)
+            {
+                return NotFound();
+            }
+            var country = await _context.Countries
+               .Include(s => s.States)
+               .ThenInclude(c => c.Citys)
+               .ThenInclude(st => st.Streets)
+               .FirstOrDefaultAsync(c => c.Id == id);
+            if (country == null)
+            {
+                return NotFound();
+            }
+            return View(country);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CountryDelete(int id)
+        {
+            if (_context.Countries == null)
+            {
+                return Problem("Entity set 'DataContext.Countries'  is null.");
+            }
+            var country = await _context.Countries.FindAsync(id);
+            if (country != null)
+            {
+                _context.Countries.Remove(country);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> CountryEdit(int? id)
+        {
+            if (id == null || _context.Countries == null)
+            {
+                return NotFound();
+            }
+            var country = await _context.Countries
+               .Include(s => s.States)
+               .ThenInclude(c => c.Citys)
+               .ThenInclude(st => st.Streets)
+               .FirstOrDefaultAsync(c => c.Id == id);
+            if (country == null)
+            {
+                return NotFound();
+            }
+            return View(country);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CountryEdit(int? id,Country country)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(country);
                 try
                 {
                     await _context.SaveChangesAsync();

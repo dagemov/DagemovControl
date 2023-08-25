@@ -16,6 +16,18 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\sebastian\source\repos\DagemovControl\DagemovControl\DagemovView
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/CountryDelete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xDb3VudHJ5RGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/CountryDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xDb3VudHJ5RGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/CountryEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xDb3VudHJ5RWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/CreateAddress.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xDcmVhdGVBZGRyZXNzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -30,6 +42,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/_CountryData.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xfQ291bnRyeURhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Address/_CountryDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc1xfQ291bnRyeURldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/sebastian/source/repos/DagemovControl/DagemovControl/DagemovView/Views/Home/Index.cshtml]

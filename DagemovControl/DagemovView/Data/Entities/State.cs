@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public Country Country { get; set; }
         public ICollection<City> Citys { get; set; }
+        public int CityNumber => Citys.Count;
     }
 }
