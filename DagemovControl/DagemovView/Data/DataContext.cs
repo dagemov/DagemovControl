@@ -19,6 +19,7 @@ namespace DagemovView.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Country>().HasIndex(c => c.Name).IsUnique();
+            modelBuilder.Entity<State>().HasIndex("Name", "CountryId").IsUnique();
         }
 
     }

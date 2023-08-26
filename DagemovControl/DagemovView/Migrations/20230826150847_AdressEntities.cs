@@ -4,7 +4,7 @@
 
 namespace DagemovView.Migrations
 {
-    public partial class makeAdress : Migration
+    public partial class AdressEntities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,7 +45,7 @@ namespace DagemovView.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -120,6 +120,12 @@ namespace DagemovView.Migrations
                 name: "IX_States_CountryId",
                 table: "States",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_States_Name_CountryId",
+                table: "States",
+                columns: new[] { "Name", "CountryId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streets_CityId",

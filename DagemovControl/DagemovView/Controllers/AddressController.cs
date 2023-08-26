@@ -1,5 +1,6 @@
 ﻿using DagemovView.Data;
 using DagemovView.Data.Entities;
+using DagemovView.Models.Address;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -203,6 +204,67 @@ namespace DagemovView.Controllers
                 }
             }
             return View(country);
+        }
+        /*
+            CRUD STATES         
+         */
+        [HttpGet]
+        public async Task<IActionResult> CreateState(int? id)
+        {            
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Country country = await _context.Countries.FindAsync(id);
+
+            if (country == null)
+            {
+                return NotFound();
+            }
+
+            AddState model = new()
+            {
+                CountryId = country.Id,
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateState(AddState model)
+        {
+            if (ModelState.IsValid)
+            {                               
+                State state = new()
+                {
+                    Citys= new List<City>(),
+                    Country=await _context.Countries.FindAsync(model.CountryId),
+                    Name=model.Name,
+                };
+
+                _context.Add(state);
+                try{
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(CountryDetails), new { Id = model.CountryId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Duplicate Country Name in dataBase");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            return View(model);
         }
     }
 }
