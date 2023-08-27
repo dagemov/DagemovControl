@@ -266,5 +266,122 @@ namespace DagemovView.Controllers
             }
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> StateDetails(int? id)  
+        {
+            if (id == null || _context.States == null)
+            {
+                return NotFound();
+            }
+            var State=await _context.States
+                .Include(c=>c.Citys)
+                .ThenInclude(s=>s.Streets)
+                .FirstOrDefaultAsync(s=>s.Id==id);
+            if(State == null)
+            {
+                return NotFound();
+            }
+            return View(State);
+        }
+        [HttpGet]
+        public async Task<IActionResult> StateDelete(int? id)
+        {
+            if (id == null || _context.States == null)
+            {
+                return NotFound();
+            }
+            var state = await _context.States                
+               .Include(c => c.Country)
+               .FirstOrDefaultAsync(s =>s.Id == id);
+            if (state == null)
+            {
+                return NotFound();
+            }
+            return View(state);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StateDelete(int id)
+        {
+            if (_context.States == null)
+            {
+                return Problem("Entity set 'DataContext.States'  is null.");
+            }
+            State state = await _context.States
+              .Include(s => s.Country)
+              .FirstOrDefaultAsync(s => s.Id == id);
+            if (state != null)
+            {
+                _context.States.Remove(state);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(CountryDetails), new { id = state.Country.Id });
+        }
+        [HttpGet]
+        public async Task<IActionResult> StateEdit(int? id)
+        {
+            State state = await _context.States
+                 .Include(s => s.Country)
+                 .FirstOrDefaultAsync(s => s.Id == id);
+            if (state == null)
+            {
+                return NotFound();
+            }
+
+            AddState model = new()
+            {
+                CountryId = state.Country.Id,
+                Id = state.Id,
+                Name = state.Name,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StateEdit(int id, AddState model)
+        {
+
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    State state = new()
+                    {
+                        Id = model.Id,
+                        Country = await _context.Countries.FindAsync(model.CountryId),
+                        Name = model.Name,
+                    };
+                    _context.Update(state);
+                   
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(CountryDetails), new { Id = model.CountryId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There is alredy a one state whit thi's name");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
     }
 }

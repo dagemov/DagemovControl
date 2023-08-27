@@ -1,0 +1,25 @@
+﻿@model DagemovView.Data.Entities.State;
+@{
+    ViewData["Title"] = "Deleted " + Model.Name;
+}
+<h1>State To Delete @Model.Name</h1>
+
+<h3>Are you really sure about it?</h3>
+<div>
+    <div clas="row">
+        <form asp-action="StateDelete">
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Citys" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <partial name="_StateDetails" />
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Delete" class="btn btn-danger" />
+                <a asp-action="CountryDetails" asp-route-id="@Model.Country.Id" class="btn btn-success mt">Back</a>
+            </div>
+
+        </form>
+    </div>
+</div>
