@@ -383,5 +383,135 @@ namespace DagemovView.Controllers
 
             return View(model);
         }
+        /*
+         * CRUD CITIES
+         */
+        [HttpGet]
+        public async Task<IActionResult> CityCreate(int? id)
+        {
+            if (id == null || _context.Cities == null) {
+                return NotFound();
+            }
+           State state = await _context.States.FindAsync(id);
+            if (state == null)
+            {
+                return NotFound();
+            }
+            AddCity model = new()
+            {
+                StateId = state.Id,
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CityCreate(int id,AddCity model)
+        {
+            if (!ModelState.IsValid)
+            {
+                
+                try
+                {
+                    City city = new()
+                    {
+                        Name = model.Name,
+                        State = await _context.States.FindAsync(model.StateId),
+                        Streets = new List<Street>(),
+                    };
+                    _context.Add(city);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(StateDetails), new { Id = model.StateId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There is alredy a one city whit thi's name");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CityDetails(int? id)
+        {
+            if (id==null || _context.Cities == null)
+            {
+                return NotFound();
+            }
+            var city= await _context.Cities
+                .Include(s => s.Streets)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (city==null)
+            {
+                return NotFound();
+            }
+           return View(city);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CityEdit(int? id)
+        {
+            if (id == null || _context.Cities == null)
+            {
+                return NotFound();
+            }
+            var city = await _context.Cities
+                .Include (s => s.Streets)
+                .FirstOrDefaultAsync(c=>c.Id==id);
+            if (city==null)
+            {
+                return NotFound();
+            }
+            AddCity model = new()
+            {
+                StateId = city.Id
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CityEdit(int? id,AddCity model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    City city = new()
+                    {
+                        Name = model.Name,
+                        State = await _context.States.FindAsync(model.StateId),
+                        Streets = new List<Street>(),
+                    };
+                    _context.Update(city);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(StateDetails), new { Id = model.StateId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There is alredy a one city whit thi's name");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            return View(model);
+        }
+        
     }
 }
